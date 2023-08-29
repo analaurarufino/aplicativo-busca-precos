@@ -1,9 +1,5 @@
-from modules.controler import ControllerBuyer
-from modules.controler import ControllerSupermarket
-instancias = {"buyer": []}
+from modules.controler import mainControll 
 
-instanciasSM = {"supermarkets": []}
+instancias = {"buyer": [], "supermarkets": []}
 
-
-ControllerBuyer(instancias=instancias["buyer"])
-ControllerSupermarket(instancias=instanciasSM["supermarkets"])
+mainControll(instancias)
