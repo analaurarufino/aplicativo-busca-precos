@@ -10,8 +10,11 @@ class Supermarket:
         if not self.name:
             return 1
 
-        if len(self.password) < 8 or not any(c.isupper() for c in self.password):
+        if len(self.password) > 20 or len(self.password) < 8 or sum(c.isdigit() for c in self.password) < 2 or not any(c.isalpha() for c in self.password):
             return 2
+
+        if len(self.login) > 12 or self.login == "" or any(char.isdigit() for char in self.login):
+            return 3
 
         return 0
 
@@ -33,7 +36,12 @@ def addSupermarket():
             print("Nome não pode ser vazio")
             supermarket.name = input("Nome: ")
         elif (supermarket.validate_data() == 2):
-            print("Senha deve ter 8 caracteres e conter pelo menos uma letra maiúscula")
+            print(
+                "Senha deve ter entre 8 e 20 caracteres e conter letras e números e ao menos 2 números.")
             supermarket.password = input("Senha: ")
             print(supermarket.password)
+        elif (supermarket.validate_data() == 3):
+            print("Login não pode conter números nem mais de 12 caracteres")
+            supermarket.login = input("Login: ")
+            print(supermarket.login)
     return supermarket
