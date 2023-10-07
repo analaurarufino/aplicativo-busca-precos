@@ -1,5 +1,4 @@
 import mysql.connector
-
 from abc import ABC, abstractmethod
 
 class Database(ABC):
@@ -9,6 +8,7 @@ class Database(ABC):
         pass
 
 class Connect(Database):
+    
     def connectDB(self):
         keys = open('database.txt')
         host = keys.readline().split('=')[1].strip()
@@ -22,7 +22,12 @@ class Connect(Database):
         return mydb
 
 
-class DataPersistence:         
+class DataPersistence:
+    
+    def __init__(self):
+        self.database_connection = Connect()
+        self.mydb = self.database_connection.connectDB()
+          
     def create_table(self):
     def insert(self, mydb):
     def update(self,mydb):
@@ -30,4 +35,3 @@ class DataPersistence:
     def list_all(self):
     def research(self,):
     def disconnectDB(self):
-        
