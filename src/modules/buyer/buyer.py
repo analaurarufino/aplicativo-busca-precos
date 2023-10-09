@@ -1,11 +1,25 @@
-class Buyer:
-    def __init__(self, name, email, password, favoriteSupermarkets=[], shoppingList=[]):
-        self.name = name
-        self.email = email
-        self.password = password
-        self.favoriteSupermarkets = favoriteSupermarkets
-        self.shoppingList = shoppingList
+from user.user import User
 
+class Buyer(User):
+    def __init__(self, name, email, password, user_id, favorite_supermarkets=[], shopping_list=[]):
+        super().__init__(name, email, password, user_id)
+        self.favorite_supermarkets = favorite_supermarkets
+        self.shopping_list = shopping_list
+
+    # Getter e setter adicionais para os atributos específicos da classe Buyer
+    def get_favorite_supermarkets(self):
+        return self.favorite_supermarkets
+
+    def set_favorite_supermarkets(self, favorite_supermarkets):
+        self.favorite_supermarkets = favorite_supermarkets
+
+    def get_shopping_list(self):
+        return self.shopping_list
+
+    def set_shopping_list(self, shopping_list):
+        self.shopping_list = shopping_list
+
+"""
     def validate_data(self):
         if not self.name:
             return 1
@@ -43,3 +57,5 @@ def addBuyer():
             buyer.password = input("Senha: ")
             print(buyer.password)
     return buyer
+
+    """
