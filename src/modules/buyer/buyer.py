@@ -1,4 +1,5 @@
 from user.user import User
+from validation.validation import Validation
 
 class Buyer(User):
     def __init__(self, name, email, password, user_id, favorite_supermarkets=[], shopping_list=[]):
@@ -19,22 +20,37 @@ class Buyer(User):
     def set_shopping_list(self, shopping_list):
         self.shopping_list = shopping_list
 
-"""
+class Buyer(User):
+    def __init__(self, name, email, password, user_id, favorite_supermarkets=[], shopping_list=[]):
+        super().__init__(name, email, password, user_id)
+        self.favorite_supermarkets = favorite_supermarkets
+        self.shopping_list = shopping_list
+
+
     def validate_data(self):
-        if not self.name:
+        if not Validation.validate_name(self.name):
             return 1
 
-        if "@" not in self.email or "." not in self.email:
+        if not Validation.validate_email(self.email):
             return 2
 
-        if len(self.password) > 20 or len(self.password) < 8 or sum(c.isdigit() for c in self.password) < 2 or not any(c.isalpha() for c in self.password):
+        if not Validation.validate_password(self.password):
             return 3
 
         return 0
 
     def print_informations(self):
-        print("{\n" "  name: ", self.name, "\n  email: ", self.email,
-              "\n  password: ", self.password, "\n" "}\n")
+        print(
+            "{\n"
+            "  name: ",
+            self.name,
+            "\n  email: ",
+            self.email,
+            "\n  password: ",
+            self.password,
+            "\n"
+            "}\n",
+        )
 
 
 def addBuyer():
@@ -44,18 +60,17 @@ def addBuyer():
 
     buyer = Buyer(name, email, password, [], [])
 
-    while (buyer.validate_data() != 0):
-        if (buyer.validate_data() == 1):
+    while buyer.validate_data() != 0:
+        if buyer.validate_data() == 1:
             print("Nome não pode ser vazio")
             buyer.name = input("Nome: ")
-        elif (buyer.validate_data() == 2):
+        elif buyer.validate_data() == 2:
             print("Email inválido")
             buyer.email = input("Email: ")
-        elif (buyer.validate_data() == 3):
+        elif buyer.validate_data() == 3:
             print(
-                "Senha deve ter entre 8 e 20 caracteres e conter letras e números e ao menos 2 números")
+                "Senha deve ter entre 8 e 20 caracteres e conter letras e números e ao menos 2 números"
+            )
             buyer.password = input("Senha: ")
-            print(buyer.password)
-    return buyer
 
-    """
+    return buyer
