@@ -1,4 +1,5 @@
 from modules.views.index import BaseView
+from modules.buyer.buyer import Buyer
 
 
 class BuyerView(BaseView):
@@ -7,4 +8,6 @@ class BuyerView(BaseView):
         name = self.get_input("Nome: ")
         email = self.get_input("Email: ")
         password = self.get_input("Senha: ")
-        return {"name": name, "email": email, "password": password}
+        data = Buyer(name, email, password)
+        return data
+        #return {"name": name, "email": email, "password": password}

@@ -1,9 +1,8 @@
 class User:
-    def __init__(self, name, email, password, user_id):
+    def __init__(self, name, email, password):
         self.name = name
         self.email = email
         self.password = password
-        self.user_id = user_id
 
     # Getters para os atributos
     def get_name(self):
@@ -15,8 +14,8 @@ class User:
     def get_password(self):
         return self.password
 
-    def get_user_id(self):
-        return self.user_id
+    def get_data(self):
+        return {"name": self.name, "email": self.email, "password": self.password}
 
     # Setters para os atributos
     def set_name(self, name):
@@ -27,6 +26,3 @@ class User:
 
     def set_password(self, password):
         self.password = password
-
-    def set_user_id(self, user_id):
-        self.user_id = user_id

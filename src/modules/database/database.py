@@ -31,9 +31,8 @@ class Connect:
 
 
 class DataPersistence:
-    def __init__(self, table_name):
-        self.database_connection = Connect()
-        self.mydb = self.database_connection.connectDB()
+    def __init__(self, table_name, db):
+        self.mydb = db
         self.cursor = self.mydb.cursor()
         self.table_name = table_name
           

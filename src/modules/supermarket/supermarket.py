@@ -1,8 +1,8 @@
 from user.user import User
 
 class Supermarket(User):
-    def __init__(self, name, email, password, user_id, cnpj, shopping_items=[]):
-        super().__init__(name, email, password, user_id)
+    def __init__(self, name, email, login, password, cnpj, shopping_items=[]):
+        super().__init__(name, email, password)
         self.cnpj = cnpj
         self.shopping_items = shopping_items
 
@@ -12,6 +12,15 @@ class Supermarket(User):
 
     def set_cnpj(self, cnpj):
         self.cnpj = cnpj
+    
+    def set_name(self, name):
+        self.name = name
+    
+    def set_email(self, email):
+        self.email = email
+
+    def set_password(self, password):
+        self.password = password
 
     def get_shopping_items(self):
         return self.shopping_items
