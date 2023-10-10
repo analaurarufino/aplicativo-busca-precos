@@ -7,73 +7,83 @@ class Database(ABC):
     def connectDB(self):
         pass
 
-class Connect(Database):
-    
+class Connect:
+    def __init__(self):
+        self.mydb = None
+
     def connectDB(self):
         keys = open('database.txt')
         host = keys.readline().split('=')[1].strip()
         username = keys.readline().split('=')[1].strip()
         password = keys.readline().split('=')[1].strip()
-        mydb = mysql.connector.connect(
+        self.mydb = mysql.connector.connect(
             host=host,
             user=username,
             password=password,
         )
-        return mydb
+        return self.mydb
+
+
+    def close(self):
+        if self.mydb:
+            self.mydb.close()
+        
 
 
 class DataPersistence:
-    
-    def __init__(self):
+    def __init__(self, table_name):
         self.database_connection = Connect()
         self.mydb = self.database_connection.connectDB()
         self.cursor = self.mydb.cursor()
+        self.table_name = table_name
           
     def create_table(self):
-        new_table = "CREATE TABLE IF NOT EXISTS tabela (name VARCHAR(255), email VARCHAR(255), password VARCHAR(255))"
-        self.cursor.execute(new_table)
+        create_table_query = f"CREATE TABLE IF NOT EXISTS {self.table_name} (name VARCHAR(255), email VARCHAR(255), password VARCHAR(255))"
+        self.cursor.execute(create_table_query)
         self.mydb.commit()
         
-    def insert(self, name, email, password):
-        insert_query = "INSERT INTO tabela (name, email, password) VALUES (%s, %s, %s)"
-        data = (name, email, password)
+    def insert(self, column_values):
+        columns = ', '.join(column_values.keys())
+        values = ', '.join(['%s'] * len(column_values))
+
+        insert_query = f"INSERT INTO {self.table_name} ({columns}) VALUES ({values})"
+        data = tuple(column_values.values())
+
+        print(data)
+
         self.cursor.execute(insert_query, data)
         self.mydb.commit()
         
-    def update(self, name, new_email, new_password):
-        update_query = "UPDATE tabela SET email = %s, password = %s WHERE name = %s"
-        data = (new_email, new_password, name)
-        self.cursor.execute(update_query, data)
+    def get(self, conditions):
+        # Constrói a parte da query para a cláusula WHERE
+        where_clause = " AND ".join([f"{key} = %s" for key in conditions.keys()])
+        values = tuple(conditions.values())
+
+        select_query = f"SELECT * FROM {self.table_name} WHERE {where_clause}"
+
+        self.cursor.execute(select_query, values)
+        return self.cursor.fetchone()
+
+    def update(self, conditions, column_values):
+        # Constrói a parte da query para a cláusula WHERE
+        where_clause = " AND ".join([f"{key} = %s" for key in conditions.keys()])
+        values = tuple(list(conditions.values()) + list(column_values.values()))
+
+        set_clause = ", ".join([f"{key} = %s" for key in column_values.keys()])
+        update_query = f"UPDATE {self.table_name} SET {set_clause} WHERE {where_clause}"
+
+        self.cursor.execute(update_query, values)
         self.mydb.commit()
 
-    def delete_name(self, name):
-        first_delete_query = "DELETE FROM tabela WHERE name = %s"
-        data = (name,)
-        self.cursor.execute(first_delete_query, data)
+    def delete(self, conditions):
+        # Constrói a parte da query para a cláusula WHERE
+        where_clause = " AND ".join([f"{key} = %s" for key in conditions.keys()])
+        values = tuple(conditions.values())
+
+        delete_query = f"DELETE FROM {self.table_name} WHERE {where_clause}"
+
+        self.cursor.execute(delete_query, values)
         self.mydb.commit()
-    
-    def delete_email(self, email):
-        second_delete_query = "DELETE FROM tabela WHERE email = %s"
-        data = (email,)
-        self.cursor.execute(second_delete_query, data)
-        self.mydb.commit()
-    
-    def delete_password(self, password):
-        third_delete_query = "DELETE FROM tabela WHERE password = %s"
-        data = (password,)
-        self.cursor.execute(third_delete_query, data)
-        self.mydb.commit()
-        
-    def list_all(self):
-        list = "SELECT * FROM tabela"
-        self.cursor.execute(list)
-        return self.cursor.fetchall()
-    
-    def research(self, search_query):
-        research_query = "SELECT * FROM tabela WHERE name LIKE %s OR email LIKE %s OR password LIKE %s"
-        data = (f"%{search_query}%", f"%{search_query}%", f"%{search_query}%")
-        self.cursor.execute(research_query, data)
-        return self.cursor.fetchall()
         
     def disconnectDB(self):
         self.database_connection.close()

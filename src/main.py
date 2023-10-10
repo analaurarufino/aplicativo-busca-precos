@@ -1,7 +1,4 @@
-from modules.controler import mainControll 
-from modules.supermarket.supermarket import Supermarket
-from modules.buyer.buyer import Buyer
+from modules.controler import init
 
-instancias = {"buyer": [], "supermarkets": []}
+init()
 
-mainControll(instancias)

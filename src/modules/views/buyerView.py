@@ -1,4 +1,4 @@
-from index import BaseView
+from modules.views.index import BaseView
 
 
 class BuyerView(BaseView):
