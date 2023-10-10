@@ -1,11 +1,26 @@
-class Supermarket:
-    def __init__(self, name, login, password, cnpj, shoppingItens=[]):
-        self.name = name
-        self.login = login
-        self.password = password
-        self.cnpj = cnpj
-        self.shoppingItens = shoppingItens
+from user.user import User
 
+class Supermarket(User):
+    def __init__(self, name, email, password, user_id, cnpj, shopping_items=[]):
+        super().__init__(name, email, password, user_id)
+        self.cnpj = cnpj
+        self.shopping_items = shopping_items
+
+    # Getter e setter adicionais para os atributos específicos da classe Supermarket
+    def get_cnpj(self):
+        return self.cnpj
+
+    def set_cnpj(self, cnpj):
+        self.cnpj = cnpj
+
+    def get_shopping_items(self):
+        return self.shopping_items
+
+    def set_shopping_items(self, shopping_items):
+        self.shopping_items = shopping_items
+
+
+"""
     def validate_data(self):
         if not self.name:
             return 1
@@ -45,3 +60,4 @@ def addSupermarket():
             supermarket.login = input("Login: ")
             print(supermarket.login)
     return supermarket
+"""
