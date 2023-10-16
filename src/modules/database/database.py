@@ -11,11 +11,7 @@ class Connect:
     def __init__(self):
         self.mydb = None
 
-    def connectDB(self):
-        keys = open('database.txt')
-        host = keys.readline().split('=')[1].strip()
-        username = keys.readline().split('=')[1].strip()
-        password = keys.readline().split('=')[1].strip()
+    def connectDB(self, host, username, password):
         self.mydb = mysql.connector.connect(
             host=host,
             user=username,
@@ -52,6 +48,7 @@ class DataPersistence:
 
         self.cursor.execute(insert_query, data)
         self.mydb.commit()
+        return {"message": 'Inserção feita com sucesso!', "data": data}
         
     def get(self, conditions):
         # Constrói a parte da query para a cláusula WHERE
