@@ -7,9 +7,15 @@ from modules.config.config import Config
 from modules.validation.error import CustomError
 
 class Instances:
-    def __init__(self, input_fun, print_fun):
-        print("!! Estou iniciando !!")
+    _instance = None
 
+    def __new__(cls, input_fun, print_fun):
+        if not cls._instance:
+            cls._instance = super().__new__(cls)
+            cls._instance._initialize(input_fun, print_fun)
+        return cls._instance
+
+    def _initialize(self, input_fun, print_fun):
         try:
             # Carregar configurações
             config = Config('src/config.txt')
@@ -31,7 +37,7 @@ class Instances:
             # Conectar à base de dados
             connection = Connect()
             db = connection.connectDB(host=host, password=password, username=user)
-            return db,  connection.close()
+            return db, connection.close
         except Exception as e:
             raise CustomError(f"Não foi possível conectar à base de dados: {str(e)}")
 
@@ -41,7 +47,7 @@ class Instances:
             return res
         except Exception as e:
             print(CustomError(f"Não foi possível conectar à tabela: {str(e)}"))
-            print("Por favor tente mais tarde")
+            print("Por favor, tente mais tarde.")
 
     def getDBInstance(self):
         return self.db

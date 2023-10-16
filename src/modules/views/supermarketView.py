@@ -1,11 +1,13 @@
 from modules.views.index import BaseView
-
+from modules.supermarket.supermarket import Supermarket
 
 class SupermarketView(BaseView):
     def get_information(self):
         self.display_output("Digite as informações do Supermercado: ")
         name = self.get_input("Nome: ")
-        login = self.get_input("Login: ")
+        email = self.get_input("Email: ")
         password = self.get_input("Senha: ")
         cnpj = self.get_input("CNPJ: ")
-        return {"name": name, "login": login, "password": password, "cnpj": cnpj}
+        data = Supermarket(name, email, password, cnpj)
+        return data
+    
