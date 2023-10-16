@@ -10,4 +10,3 @@ class BuyerView(BaseView):
         password = self.get_input("Senha: ")
         data = Buyer(name, email, password)
         return data
-        #return {"name": name, "email": email, "password": password}

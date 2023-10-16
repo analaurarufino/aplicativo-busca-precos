@@ -1,3 +1,4 @@
 host=bppqajxrzzib9zmu6ujp-mysql.services.clever-cloud.com
 user=u3mibcwnmwamgkfc
 password=yncvxfCTWkdWoZSq2SnE
+prefixTable=bppqajxrzzib9zmu6ujp
