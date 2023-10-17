@@ -1,10 +1,11 @@
-from modules.database.database import Connect, DataPersistence
+from modules.database.database import DatabaseFactory, DataPersistence
 from modules.views.supermarketView import SupermarketView
 from modules.views.productView import ProductView
 from modules.views.buyerView import BuyerView
 from modules.views.mainView import MenuView
 from modules.config.config import Config
 from modules.validation.error import CustomError
+
 
 class Instances:
     _instance = None
@@ -18,8 +19,13 @@ class Instances:
     def _initialize(self, input_fun, print_fun):
         try:
             # Carregar configurações
-            config = Config('src/config.txt')
-            host, user, password, self.prefix_table = config.get_host(), config.get_user(), config.get_password(), config.get_prefix_table()
+            config = Config("src/config.txt")
+            host, user, password, self.prefix_table = (
+                config.get_host(),
+                config.get_user(),
+                config.get_password(),
+                config.get_prefix_table(),
+            )
 
             # Inicializar a base de dados
             self.db, self.close = self.initialize_database(host, user, password)
@@ -35,7 +41,8 @@ class Instances:
     def initialize_database(self, host, user, password):
         try:
             # Conectar à base de dados
-            connection = Connect()
+            factory = DatabaseFactory()
+            connection = factory.create_database("mysql")
             db = connection.connectDB(host=host, password=password, username=user)
             return db, connection.close
         except Exception as e:
