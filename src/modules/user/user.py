@@ -1,3 +1,4 @@
+from modules.validation.validation import Validation
 class User:
     def __init__(self, name, email, password):
         self.name = name
@@ -26,3 +27,22 @@ class User:
 
     def set_password(self, password):
         self.password = password
+
+    def validate_data(self):
+        try:
+            Validation.validate_name(self.name)
+        except ValueError as e:
+            print(f"Name validation error: {str(e)}")
+
+        try:
+            Validation.validate_email(self.email)
+        except ValueError as e:
+            print(f"Email validation error: {str(e)}")
+
+        try:
+           Validation.validate_password(self.password)
+        except ValueError as e:
+            print(f"Password validation error: {str(e)}")
+
+        return 0
+

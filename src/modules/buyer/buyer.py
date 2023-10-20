@@ -30,13 +30,19 @@ class Buyer(User):
         self.shopping_list = shopping_list
 
     def validate_data(self):
-        if not Validation.validate_name(self.name):
-            return 1
+        try:
+            Validation.validate_name(self.name)
+        except ValueError as e:
+            print(f"Name validation error: {str(e)}")
 
-        if not Validation.validate_email(self.email):
-            return 2
+        try:
+            Validation.validate_email(self.email)
+        except ValueError as e:
+            print(f"Email validation error: {str(e)}")
 
-        if not Validation.validate_password(self.password):
-            return 3
+        try:
+           Validation.validate_password(self.password)
+        except ValueError as e:
+            print(f"Password validation error: {str(e)}")
 
         return 0
