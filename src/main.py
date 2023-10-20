@@ -8,7 +8,7 @@ def init():
 
     response = 0
 
-    while response != 7:
+    while response != 8:
         viewMain = system_facade.instances.getViewMainInstance()
         response = viewMain.get_information()
 
@@ -18,6 +18,7 @@ def init():
             )  # View recebe as informações
             res = system_facade.insert_buyer(userBuyer)  # Chama facade
             print(res)
+            system_facade.log_user_action("Adicionar Comprador")
 
         elif response == 2:
             userSupermarket = (
@@ -25,21 +26,24 @@ def init():
             )  # View recebe as informações
             res = system_facade.insert_supermarket(userSupermarket)  # Chama facade
             print(res)
+            system_facade.log_user_action("Adicionar Supermercado")
 
         elif response == 3:
             userProduct = productView.get_information()  # View recebe as informações
             res = system_facade.insert_product(userProduct)  # Chama facade
             print(res)
+            system_facade.log_user_action("Adicionar Produto")
 
         elif response == 4:
             idTable = viewMain.get_id()
             res = system_facade.check_product_exists(idTable)  # Chama facade
             if res != False:
-                id_product, name, category, price = res
+                _, name, category, price = res
                 prod = Product(name, price, category)
                 data = productView.get_information_update(prod)
                 res = system_facade.update_product(data, idTable)
                 print(res)
+                system_facade.log_user_action("Atualizar Produto")
 
         elif response == 5:
             res = system_facade.get_all_product()  # Chama facade
@@ -47,6 +51,7 @@ def init():
             for i in res:
                 print(i)
             print("\n")
+            system_facade.log_user_action("Acessar Produtos")
 
         elif response == 6:
             idTable = viewMain.get_id()
@@ -54,8 +59,14 @@ def init():
             if res != False:
                 res = system_facade.delete_product(idTable)
                 print("\n", res)
+            system_facade.log_user_action("Remover Produto")
 
         elif response == 7:
+            res = system_facade.get_report_html()
+            print(res)
+            system_facade.log_user_action("Gerar relatorio")
+
+        elif response == 8:
             system_facade.close()
             exit()
 

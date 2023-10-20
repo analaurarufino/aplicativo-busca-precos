@@ -5,6 +5,8 @@ from modules.views.buyerView import BuyerView
 from modules.views.mainView import MenuView
 from modules.config.config import Config
 from modules.validation.error import CustomError
+from modules.controller.controller import Controller
+from modules.reports.html import HTMLReport
 
 
 class Instances:
@@ -32,11 +34,14 @@ class Instances:
         except CustomError as e:
             print(f"Erro ao inicializar: {e}")
 
+        self.controll = Controller()
+
         # Inicializar as views
         self.viewMain = MenuView(input_fun, print_fun)
         self.viewSupermarket = SupermarketView(input_fun, print_fun)
         self.viewBuyer = BuyerView(input_fun, print_fun)
         self.viewProduct = ProductView(input_fun, print_fun)
+        self.htmlReport = HTMLReport()
 
     def initialize_database(self, host, user, password):
         try:
@@ -73,3 +78,6 @@ class Instances:
 
     def getViewProductInstance(self):
         return self.viewProduct
+    
+    def getHtmlReportInstance(self):
+        return self.htmlReport
