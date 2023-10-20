@@ -1,45 +1,59 @@
-from instance import Instances
 from modules.validation.error import CustomError
 
-class SystemFacade:
-    def __init__(self, instances_instance=None):
-        if instances_instance:
-            self.instances = instances_instance
-        else:
-            input_fun = input
-            print_fun = print
-            self.instances = Instances(input_fun, print_fun)
+class Controller:
+    def __init__(self):
+        pass
 
-    def insert_buyer(self, user_data):
-        tableBuyer = self.instances.getDataPersistenceInstance('.Buyer')
-        if tableBuyer:
-            return self._insert_data(user_data, tableBuyer)
-        return False
-
-    def insert_supermarket(self, user_data):
-        tableSupermarket = self.instances.getDataPersistenceInstance('.Supermarket')
-        if tableSupermarket:
-            return self._insert_data(user_data, tableSupermarket)
-        return False
-
-    def insert_product(self, product_data):
-        tableProduct = self.instances.getDataPersistenceInstance('.Product')
-        if tableProduct:
-            return self._insert_data(product_data, tableProduct)
-        return False
-
-    def _insert_data(self, data, table):
-        isValid = data.validate_data()
-        if isValid == 0:
-            try:
+    def controllPOST(self, data, table):
+        try:
+            isValid = data.validate_data()
+            if isValid == 0:
                 table.insert(data.get_data())
                 return True
-            except:
-                print(CustomError(message="Erro ao inserir na tabela"))
-        else:
-            print("\n", isValid, "\n")
-        return False
+            else:
+                print(CustomError(message=f"Erro de validação: {isValid}"))
+                return False
+        except Exception as e:
+            print(CustomError(message=f"Erro ao inserir dados na tabela: {str(e)}"))
+            return False
 
-    def close(self):
-        self.instances.close()
+    def controllGET(self, conditions, table):
+        try:
+            return table.get(conditions)
+        except Exception as e:
+            print(CustomError(message=f"Erro ao buscar dados na tabela: {str(e)}"))
+            return False
 
+    def controllGETALL(self, table):
+        try:
+            return table.getAll()
+        except Exception as e:
+            print(CustomError(message=f"Erro ao buscar dados na tabela: {str(e)}"))
+            return False
+
+    def controllPUT(self, conditions, data, table):
+        try:
+            isValid = data.validate_data()
+            if isValid == 0:
+                table.update(conditions, data.get_data())
+                return True
+            else:
+                print(CustomError(message=f"Erro de validação: {isValid}"))
+                return False
+        except Exception as e:
+            print(CustomError(message=f"Erro ao atualizar dados na tabela: {str(e)}"))
+            return False
+
+    def controllDELETE(self, conditions, table):
+        try:
+            return table.delete(conditions)
+        except Exception as e:
+            print(CustomError(message=f"Erro ao deletar dados na tabela: {str(e)}"))
+            return False
+
+    def controllCheckIsDataExists(self, idTable, table):
+        try:
+            return table.get({"id": idTable})
+        except Exception as e:
+            print(CustomError(message=f"Item não encontrado.\n{str(e)}"))
+            return False

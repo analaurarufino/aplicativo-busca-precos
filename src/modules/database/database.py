@@ -1,13 +1,14 @@
-import mysql.connector
 from abc import ABC, abstractmethod
+import mysql.connector
+
 
 class Database(ABC):
-    
     @abstractmethod
     def connectDB(self):
         pass
 
-class Connect:
+
+class MySQLDatabase(Database):
     def __init__(self):
         self.mydb = None
 
@@ -19,11 +20,17 @@ class Connect:
         )
         return self.mydb
 
-
     def close(self):
         if self.mydb:
             self.mydb.close()
-        
+
+
+class DatabaseFactory:
+    def create_database(self, db_type):
+        if db_type == "mysql":
+            return MySQLDatabase()
+        else:
+            raise ValueError("Unsupported database type")
 
 
 class DataPersistence:
@@ -31,15 +38,15 @@ class DataPersistence:
         self.mydb = db
         self.cursor = self.mydb.cursor()
         self.table_name = table_name
-          
+
     def create_table(self):
         create_table_query = f"CREATE TABLE IF NOT EXISTS {self.table_name} (name VARCHAR(255), email VARCHAR(255), password VARCHAR(255))"
         self.cursor.execute(create_table_query)
         self.mydb.commit()
-        
+
     def insert(self, column_values):
-        columns = ', '.join(column_values.keys())
-        values = ', '.join(['%s'] * len(column_values))
+        columns = ", ".join(column_values.keys())
+        values = ", ".join(["%s"] * len(column_values))
 
         insert_query = f"INSERT INTO {self.table_name} ({columns}) VALUES ({values})"
         data = tuple(column_values.values())
@@ -48,8 +55,8 @@ class DataPersistence:
 
         self.cursor.execute(insert_query, data)
         self.mydb.commit()
-        return {"message": 'Inserção feita com sucesso!', "data": data}
-        
+        return {"message": "Inserção feita com sucesso!", "data": data}
+
     def get(self, conditions):
         # Constrói a parte da query para a cláusula WHERE
         where_clause = " AND ".join([f"{key} = %s" for key in conditions.keys()])
@@ -59,6 +66,12 @@ class DataPersistence:
 
         self.cursor.execute(select_query, values)
         return self.cursor.fetchone()
+
+    def getAll(self):
+        select_query = f"SELECT * FROM {self.table_name}"
+
+        self.cursor.execute(select_query)
+        return self.cursor.fetchall()
 
     def update(self, conditions, column_values):
         # Constrói a parte da query para a cláusula WHERE
@@ -80,6 +93,6 @@ class DataPersistence:
 
         self.cursor.execute(delete_query, values)
         self.mydb.commit()
-        
+
     def disconnectDB(self):
         self.database_connection.close()
