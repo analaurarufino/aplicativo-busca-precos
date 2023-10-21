@@ -51,7 +51,7 @@ class DataPersistence:
         insert_query = f"INSERT INTO {self.table_name} ({columns}) VALUES ({values})"
         data = tuple(column_values.values())
 
-        print(data)
+        print('\n', data)
 
         self.cursor.execute(insert_query, data)
         self.mydb.commit()
@@ -76,11 +76,10 @@ class DataPersistence:
     def update(self, conditions, column_values):
         # Constrói a parte da query para a cláusula WHERE
         where_clause = " AND ".join([f"{key} = %s" for key in conditions.keys()])
-        values = tuple(list(conditions.values()) + list(column_values.values()))
+        values = tuple(list(column_values.values()) + list(conditions.values()))
 
         set_clause = ", ".join([f"{key} = %s" for key in column_values.keys()])
         update_query = f"UPDATE {self.table_name} SET {set_clause} WHERE {where_clause}"
-
         self.cursor.execute(update_query, values)
         self.mydb.commit()
 

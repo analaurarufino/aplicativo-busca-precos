@@ -27,7 +27,7 @@ class HTMLReport(ReportTemplate):
     def save_report(self, report):
         with open('system_stats.html', 'w') as html_file:
             html_file.write(report)
-        print("Relatório HTML gerado em 'system_stats.html'")
+        print("\nRelatório HTML gerado em 'system_stats.html'")
 
 
 

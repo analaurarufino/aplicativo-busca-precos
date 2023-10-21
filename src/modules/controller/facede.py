@@ -24,7 +24,7 @@ class SystemFacade:
             user_data, self.instances.getDataPersistenceInstance(".Supermarket")
         )
         if res == True:
-            return "\Supermercado inserido com sucesso\n"
+            return "\nSupermercado inserido com sucesso\n"
         else:
             return "\nNão foi possivel inserir o Supermercado\n"
 
@@ -33,7 +33,7 @@ class SystemFacade:
             product_data, self.instances.getDataPersistenceInstance(".Product")
         )
         if res == True:
-            return "\Produto inserido com sucesso\n"
+            return "\nProduto inserido com sucesso\n"
         else:
             return "\nNão foi possivel inserir o Produto\n"
 
@@ -100,7 +100,7 @@ class SystemFacade:
         data = html.collect_data()
         dataHtml = html.format_report(data)
         html.save_report(dataHtml)
-        return 'Relatorio salvo'
+        return 'Relatorio salvo\n'
 
     def close(self):
         self.instances.close()

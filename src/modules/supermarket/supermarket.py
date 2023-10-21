@@ -1,4 +1,5 @@
 from modules.user.user import User
+from modules.validation.validation import Validation
 
 
 class Supermarket(User):
@@ -37,5 +38,9 @@ class Supermarket(User):
     def products(self, products):
         self.products = products
 
-    def validate_data(self):  # FUNÇÃO TEMPORÁRIA, IMPLEMENTAR VALIDAÇÃO
-        return 0
+    def validate_data(self):
+        Validation.validate_name(self.name)
+        Validation.validate_email(self.email)
+        Validation.validate_password(self.password)
+        Validation.validate_cnpj(self.cnpj)
+        return True
