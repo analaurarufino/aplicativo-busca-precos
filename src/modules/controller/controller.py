@@ -30,6 +30,7 @@ class Controller:
     def controllPUT(self, conditions, data, table):
         try:
             data.validate_data()
+            print(data.get_data())
             table.update(conditions, data.get_data())
             return True
         except Exception as e:
