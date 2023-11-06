@@ -1,5 +1,4 @@
 from modules.user.user import User
-from modules.validation.validation import Validation
 
 class Buyer(User):
     def __init__(self, name, email, password, favorite_supermarkets=[], shopping_list=[]):

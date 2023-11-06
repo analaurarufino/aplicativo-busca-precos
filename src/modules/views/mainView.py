@@ -15,6 +15,7 @@ class MenuView(BaseView):
             "Listar todos os produtos",
             "Excluir Produto",
             "Estatísticas do sistema",
+            "Reverter alteração (produto)",
             "Sair",
         ]
 
