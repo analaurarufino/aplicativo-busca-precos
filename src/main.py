@@ -16,58 +16,58 @@ def init():
             userBuyer = (
                 system_facade.instances.getViewBuyerInstance().get_information()
             )  # View recebe as informações
-            res = system_facade.insert_buyer(userBuyer)  # Chama facade
+            res = system_facade.execute_command("insert_buyer",userBuyer)  # Chama facade
             print(res)
-            system_facade.log_user_action("Adicionar Comprador")
+            system_facade.execute_command("log_user_action","Adicionar Comprador")
 
         elif response == 2:
             userSupermarket = (
                 system_facade.instances.getViewSupermarketInstance().get_information()
             )  # View recebe as informações
-            res = system_facade.insert_supermarket(userSupermarket)  # Chama facade
+            res = system_facade.execute_command("insert_supermarket", userSupermarket)  # Chama facade
             print(res)
-            system_facade.log_user_action("Adicionar Supermercado")
+            system_facade.execute_command("log_user_action","Adicionar Supermercado")
 
         elif response == 3:
             userProduct = productView.get_information()  # View recebe as informações
-            res = system_facade.insert_product(userProduct)  # Chama facade
+            res = system_facade.execute_command("insert_product", userProduct)  # Chama facade
             print(res)
-            system_facade.log_user_action("Adicionar Produto")
+            system_facade.execute_command("log_user_action","Adicionar Produto")
 
         elif response == 4:
             idTable = viewMain.get_id()
-            res = system_facade.check_product_exists(idTable)  # Chama facade
+            res = system_facade.execute_command("check_product_exists", idTable)  # Chama facade
             if res != False:
                 _, name, category, price = res
                 prod = Product(name, price, category)
                 data = productView.get_information_update(prod)
-                res = system_facade.update_product(data, idTable)
+                res = system_facade.execute_command("update_product", {"product_data":data,"idTable": idTable})
                 print(res)
-                system_facade.log_user_action("Atualizar Produto")
+                system_facade.execute_command("log_user_action","Atualizar Produto")
 
         elif response == 5:
-            res = system_facade.get_all_product()  # Chama facade
+            res = system_facade.execute_command("get_all_product", '')  # Chama facade
             print("\n")
             for i in res:
                 print(i)
             print("\n")
-            system_facade.log_user_action("Acessar Produtos")
+            system_facade.execute_command("log_user_action","Acessar Produtos")
 
         elif response == 6:
             idTable = viewMain.get_id()
-            res = system_facade.check_product_exists(idTable)  # Chama facade
+            res = system_facade.execute_command("check_product_exists", idTable)  # Chama facade
             if res != False:
-                res = system_facade.delete_product(idTable)
+                res = system_facade.execute_command("delete_product", idTable)
                 print("\n", res)
-            system_facade.log_user_action("Remover Produto")
+            system_facade.execute_command("log_user_action","Remover Produto")
 
         elif response == 7:
-            res = system_facade.get_report_html()
+            res = system_facade.execute_command("get_report_html", '')
             print(res)
-            system_facade.log_user_action("Gerar relatorio")
+            system_facade.execute_command("log_user_action","Gerar relatorio")
 
         elif response == 8:
-            system_facade.close()
+            system_facade.execute_command("close", '')
             exit()
 
 
