@@ -8,7 +8,7 @@ def init():
 
     response = 0
 
-    while response != 8:
+    while response != 9:
         viewMain = system_facade.instances.getViewMainInstance()
         response = viewMain.get_information()
 
@@ -38,8 +38,10 @@ def init():
             idTable = viewMain.get_id()
             res = system_facade.execute_command("check_product_exists", idTable)  # Chama facade
             if res != False:
+                id, _, _, _ = res
                 _, name, category, price = res
                 prod = Product(name, price, category)
+                system_facade.execute_command("backup_product", {"item": prod, "id": id })
                 data = productView.get_information_update(prod)
                 res = system_facade.execute_command("update_product", {"product_data":data,"idTable": idTable})
                 print(res)
@@ -67,6 +69,11 @@ def init():
             system_facade.execute_command("log_user_action","Gerar relatorio")
 
         elif response == 8:
+            res= system_facade.execute_command("restore_product", '')
+            print(res)
+            system_facade.execute_command("log_user_action","Reverter alteracao")
+
+        elif response == 9:
             system_facade.execute_command("close", '')
             exit()
 

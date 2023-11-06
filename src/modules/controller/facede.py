@@ -41,7 +41,7 @@ class UpdateProductCommand(Command):
         self.system_facade = system_facade
 
     def execute(self, data):
-        return self.system_facade.update_product(data.product_data, data.idTable)
+        return self.system_facade.update_product(data["product_data"], data["idTable"])
 
 class UpdateProductSupermarketCommand(Command):
     def __init__(self, system_facade):
@@ -78,6 +78,12 @@ class GetReportHtmlCommand(Command):
 
     def execute(self):
         return self.system_facade.get_report_html()
+class RestoreProduct(Command):
+    def __init__(self, system_facade):
+        self.system_facade = system_facade
+
+    def execute(self):
+        return self.system_facade.undo_alter_product()
 
 class CloseCommand(Command):
     def __init__(self, system_facade):
@@ -86,11 +92,19 @@ class CloseCommand(Command):
     def execute(self):
         self.system_facade.close()
 
+class BackupDataProduct(Command):
+    def __init__(self, system_facade):
+        self.system_facade = system_facade
+
+    def execute(self, item):
+        return self.system_facade.backup_product(item["item"], item["id"])
+
 # Defina outras classes de comando para outros métodos, como InsertSupermarketCommand, InsertProductCommand, etc.
 
 class SystemFacade:
         
     def __init__(self, input_fun, print_fun):
+        self.backup_prod = None
         self.instances = Instances(
             input_fun, print_fun
         )  # Inicia as instancias de todas classes
@@ -107,6 +121,8 @@ class SystemFacade:
         self.log_user_action_command = LogUserActionCommand(self.system_facade)
         self.get_report_html_command = GetReportHtmlCommand(self.system_facade)
         self.close_command = CloseCommand(self.system_facade)
+        self.restore_product = RestoreProduct(self.system_facade)
+        self.backup_data_product = BackupDataProduct(self.system_facade)
 
         self.commands = {
             "insert_buyer": self.insert_buyer_command,
@@ -119,14 +135,16 @@ class SystemFacade:
             "check_product_exists": self.check_product_exists_command,
             "log_user_action": self.log_user_action_command,
             "get_report_html": self.get_report_html_command,
-            "close": self.close_command
+            "close": self.close_command,
+            "restore_product": self.restore_product,
+            "backup_product": self.backup_data_product,
         }
 
     def register_command(self, command_name, command):
         self.commands[command_name] = command
 
     def execute_command(self, command_name, data):
-        try:
+        # try:
             if command_name in self.commands:
                 if data != '':
                     return self.commands[command_name].execute(data)
@@ -134,8 +152,8 @@ class SystemFacade:
                     return self.commands[command_name].execute()
             else:
                 return "Comando não encontrado."
-        except:
-            return 'Ocorreu um erro ao executar o comando'
+        # except:
+        #     return 'Ocorreu um erro ao executar o comando'
     def insert_buyer(self, user_data):
         res = self.instances.controll.controllPOST(
             user_data, self.instances.getDataPersistenceInstance(".Buyer")
@@ -169,7 +187,11 @@ class SystemFacade:
         )
         return res
 
+    def backup_product(self, product_data, id):
+        self.backup_prod = product_data.create_snapshot(id)
+
     def update_product(self, product_data, idTable):
+        
         res = self.instances.controll.controllPUT(
             {"id": idTable},
             product_data,
@@ -180,6 +202,22 @@ class SystemFacade:
         else:
             return "\nNão foi possivel atualizar o Produto\n"
         
+    def undo_alter_product(self):
+        if self.backup_prod == None:
+            return '\nNão existe alterações feitas recentemente\n'
+        else:
+            id, item = self.backup_prod.restore()
+            res = self.instances.controll.controllPUT(
+                {"id": id},
+                item,
+                self.instances.getDataPersistenceInstance(".Product"),
+            )
+            self.backup_prod = None
+
+            if res == True:
+                return "\nAlterações desfeitas com sucesso\n"
+            else:
+                return "\nNão foi possivel reverter as alterações\n"
 
     #ATUALIZAR PRODUTOS POR APIs EXTERNAS 
     def update_product_supermarket(self, idTable):
@@ -228,11 +266,7 @@ class SystemFacade:
         html.save_report(dataHtml)
         return 'Relatorio salvo\n'
 
+
+
     def close(self):
         self.instances.close()
-
-
-
-
-# class SystemFacade:
-#     

@@ -1,4 +1,6 @@
 from modules.validation.validation import Validation
+from modules.memento.memento import Memento
+
 class Product:
     def __init__(self, name, price, subcategory):
         self.name = name
@@ -24,3 +26,6 @@ class Product:
         # Supcategoria ainda não implementada
         # Validation.validate_subcategory(self.subcategory)
         return True
+
+    def create_snapshot(self, id):
+        return Memento(self, id)
