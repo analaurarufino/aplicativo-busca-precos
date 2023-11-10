@@ -5,7 +5,8 @@ from modules.views.buyerView import BuyerView
 from modules.views.mainView import MenuView
 from modules.config.config import Config
 from modules.validation.error import CustomError
-from modules.controller.controller import Controller
+from modules.controller.controller import LoggingDecorator
+from modules.controller.controller import ConcreteController
 from modules.reports.html import HTMLReport
 
 
@@ -33,8 +34,9 @@ class Instances:
             self.db, self.close = self.initialize_database(host, user, password)
         except CustomError as e:
             print(f"Erro ao inicializar: {e}")
+        concrete_controller = ConcreteController()
 
-        self.controll = Controller()
+        self.controll = LoggingDecorator(concrete_controller)
 
         # Inicializar as views
         self.viewMain = MenuView(input_fun, print_fun)
